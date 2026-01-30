@@ -1,3 +1,4 @@
+import "dotenv/config";
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
@@ -95,11 +96,11 @@ app.use((req, res, next) => {
     },
     () => {
       log(`serving on port ${port}`);
-      
+
       // Initialize Dev³ wallet on startup
       const wallet = loadOrCreateWallet();
       log(`Dev³ wallet initialized: ${wallet.publicKey}`);
-      
+
       // Start the autonomous engine (30 second intervals)
       startAutonomousEngine(30000);
       log(`Dev³ autonomous engine started (30s intervals)`);
