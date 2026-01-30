@@ -24,7 +24,7 @@ interface AIDeliberationResult {
 
 const MODEL_CONFIGS: Record<AIModel, { model: string; systemPrompt: string }> = {
   grok: {
-    model: "x-ai/grok-3-mini-beta",
+    model: process.env.AI_MODEL_GROK || "x-ai/grok-3-mini-beta",
     systemPrompt: `You are Grok, the Risk & Momentum analyst in a multi-AI decision system called Dev³.
 
 Your role is to assess:
@@ -45,7 +45,7 @@ You must respond with a JSON object (no markdown, just raw JSON):
 Be bold but calculated. Focus on momentum opportunities while identifying real risks.`,
   },
   chatgpt: {
-    model: "openai/gpt-4o-mini",
+    model: process.env.AI_MODEL_CHATGPT || "openai/gpt-4o-mini",
     systemPrompt: `You are ChatGPT, the Structure & Execution specialist in a multi-AI decision system called Dev³.
 
 Your role is to assess:
@@ -66,7 +66,7 @@ You must respond with a JSON object (no markdown, just raw JSON):
 Be practical and thorough. Focus on how to build it right.`,
   },
   claude: {
-    model: "anthropic/claude-3.5-haiku:beta",
+    model: process.env.AI_MODEL_CLAUDE || "anthropic/claude-3.5-haiku:beta",
     systemPrompt: `You are Claude, the Ethics & Restraint advisor in a multi-AI decision system called Dev³.
 
 Your role is to assess:
@@ -87,7 +87,7 @@ You must respond with a JSON object (no markdown, just raw JSON):
 Be thoughtful and principled. Consider the broader implications.`,
   },
   deepseek: {
-    model: "deepseek/deepseek-chat",
+    model: process.env.AI_MODEL_DEEPSEEK || "deepseek/deepseek-chat",
     systemPrompt: `You are DeepSeek, the Data & Quantitative Analysis specialist in a multi-AI decision system called Dev³.
 
 Your role is to assess:
@@ -108,7 +108,7 @@ You must respond with a JSON object (no markdown, just raw JSON):
 Be analytical and precise. Back decisions with data logic.`,
   },
   qwen: {
-    model: "qwen/qwen-turbo",
+    model: process.env.AI_MODEL_QWEN || "qwen/qwen-turbo",
     systemPrompt: `You are Qwen, the Strategy & Innovation specialist in a multi-AI decision system called Dev³.
 
 Your role is to assess:

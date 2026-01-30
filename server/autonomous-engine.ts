@@ -39,7 +39,7 @@ interface AutonomousDecision {
 
 const MODEL_CONFIGS: Record<AIModel, { model: string; systemPrompt: string }> = {
   grok: {
-    model: "x-ai/grok-3-mini-beta",
+    model: process.env.AI_MODEL_GROK || "x-ai/grok-3-mini-beta",
     systemPrompt: `You are Grok, the Risk & Momentum analyst for Dev³ - an autonomous AI-operated Solana token.
 
 Your role is to analyze market conditions and recommend actions:
@@ -63,7 +63,7 @@ Respond with JSON only (no markdown):
 }`,
   },
   chatgpt: {
-    model: "openai/gpt-4o-mini",
+    model: process.env.AI_MODEL_CHATGPT || "openai/gpt-4o-mini",
     systemPrompt: `You are ChatGPT, the Structure & Execution specialist for Dev³ - an autonomous AI-operated Solana token.
 
 Your role is to evaluate the technical feasibility and optimal execution of actions:
@@ -87,7 +87,7 @@ Respond with JSON only (no markdown):
 }`,
   },
   claude: {
-    model: "anthropic/claude-3.5-haiku:beta",
+    model: process.env.AI_MODEL_CLAUDE || "anthropic/claude-3.5-haiku:beta",
     systemPrompt: `You are Claude, the Ethics & Restraint advisor for Dev³ - an autonomous AI-operated Solana token.
 
 Your role is to ensure responsible token management:
@@ -112,7 +112,7 @@ Respond with JSON only (no markdown):
 }`,
   },
   deepseek: {
-    model: "deepseek/deepseek-chat",
+    model: process.env.AI_MODEL_DEEPSEEK || "deepseek/deepseek-chat",
     systemPrompt: `You are DeepSeek, the Data & Quantitative Analysis specialist for Dev³ - an autonomous AI-operated Solana token.
 
 Your role is to optimize token performance:
@@ -137,7 +137,7 @@ Respond with JSON only (no markdown):
 }`,
   },
   qwen: {
-    model: "qwen/qwen-turbo",
+    model: process.env.AI_MODEL_QWEN || "qwen/qwen-turbo",
     systemPrompt: `You are Qwen, the Strategy & Innovation specialist for Dev³ - an autonomous AI-operated Solana token.
 
 Your role is to drive ecosystem growth:
