@@ -13,7 +13,7 @@ import { z } from "zod";
 /**
  * The three AI models that form the Dev³ trinity
  */
-export const AI_MODELS = ["grok", "chatgpt", "claude"] as const;
+export const AI_MODELS = ["grok", "chatgpt", "claude", "deepseek", "qwen"] as const;
 
 /**
  * Type representing one of the three AI models
@@ -39,6 +39,16 @@ export const AI_MODEL_ROLES = {
     name: "Claude",
     role: "Ethics & Restraint",
     description: "Ethics, restraint, and long-term consistency",
+  },
+  deepseek: {
+    name: "DeepSeek",
+    role: "Data & Quantitative",
+    description: "Data analysis, efficiency metrics, and quantitative optimization",
+  },
+  qwen: {
+    name: "Qwen",
+    role: "Strategy & Innovation",
+    description: "Strategic planning, ecosystem innovation, and market adaptation",
   },
 } as const;
 

@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Loader2, Plus, Zap, Brain, Shield, CheckCircle, XCircle, AlertCircle, Activity, Clock } from "lucide-react";
+import { Loader2, Plus, Zap, Brain, Shield, CheckCircle, XCircle, AlertCircle, Activity, Clock, Database, Globe } from "lucide-react";
 import type { Decision, Consensus, AIResponse, ActivityLog } from "@shared/schema";
 import { formatDistanceToNow } from "date-fns";
 
@@ -18,6 +18,8 @@ const AI_MODELS = {
   grok: { name: "Grok", role: "Risk & Momentum", icon: Zap, color: "text-orange-500" },
   chatgpt: { name: "ChatGPT", role: "Structure & Execution", icon: Brain, color: "text-emerald-500" },
   claude: { name: "Claude", role: "Ethics & Restraint", icon: Shield, color: "text-blue-500" },
+  deepseek: { name: "DeepSeek", role: "Data & Quantitative", icon: Database, color: "text-purple-500" },
+  qwen: { name: "Qwen", role: "Strategy & Innovation", icon: Globe, color: "text-cyan-500" },
 };
 
 function VoteIcon({ vote }: { vote: string }) {
@@ -49,7 +51,7 @@ const ACTIVITY_LABELS: Record<string, { label: string; icon: typeof CheckCircle 
 function ActivityLogItem({ log }: { log: ActivityLog }) {
   const config = ACTIVITY_LABELS[log.type] || { label: log.type, icon: Activity };
   const Icon = config.icon;
-  
+
   return (
     <div data-testid={`activity-${log.id}`} className="flex items-start gap-3 py-3 border-b last:border-0">
       <div className="mt-0.5">
@@ -98,11 +100,11 @@ function DecisionCard({ decision }: { decision: Decision }) {
             {decision.priority}
           </Badge>
         </div>
-        
+
         {responses.length > 0 && (
           <div className="mt-4 space-y-2">
             <div className="text-sm font-medium text-muted-foreground">AI Responses:</div>
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
               {responses.map((response: AIResponse) => {
                 const model = AI_MODELS[response.model as keyof typeof AI_MODELS];
                 const Icon = model?.icon || Brain;
@@ -117,7 +119,7 @@ function DecisionCard({ decision }: { decision: Decision }) {
             </div>
           </div>
         )}
-        
+
         {consensus && (
           <div className="mt-4 p-3 bg-muted rounded-lg">
             <div className="flex items-center gap-2">
@@ -270,12 +272,12 @@ export default function Home() {
             <h1 className="text-2xl font-bold">Decision Dashboard</h1>
             <p className="text-sm text-muted-foreground">Three AI minds. One decision.</p>
           </div>
-          <NewDecisionDialog onSuccess={() => {}} />
+          <NewDecisionDialog onSuccess={() => { }} />
         </div>
         <section className="mb-8">
           <Card className="bg-gradient-to-br from-primary/10 via-background to-accent/10">
             <CardContent className="p-8">
-              <div className="grid md:grid-cols-3 gap-6">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
                 {Object.entries(AI_MODELS).map(([key, model]) => {
                   const Icon = model.icon;
                   return (

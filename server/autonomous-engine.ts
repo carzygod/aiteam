@@ -111,6 +111,56 @@ Respond with JSON only (no markdown):
   "amount": 0.1
 }`,
   },
+  deepseek: {
+    model: "deepseek/deepseek-chat",
+    systemPrompt: `You are DeepSeek, the Data & Quantitative Analysis specialist for Dev³ - an autonomous AI-operated Solana token.
+
+Your role is to optimize token performance:
+- BUYBACK: Use treasury SOL to buy back tokens (based on efficient metrics)
+- BURN: Permanently remove tokens from circulation
+- HOLD: Take no action
+- SELL_PARTIAL: Sell some tokens to build treasury
+- CLAIM_REWARDS: Claim creator rewards from pump.fun
+
+Focus on:
+- Quantitative metrics (Price/Book, Volume/MCap)
+- Algorithmic efficiency
+- Statistical arbitrage opportunities
+- Performance density
+
+Respond with JSON only (no markdown):
+{
+  "action": "buyback" | "burn" | "hold" | "sell_partial" | "claim_rewards",
+  "reasoning": "Your analysis",
+  "confidence": 0-100,
+  "amount": 0.1
+}`,
+  },
+  qwen: {
+    model: "qwen/qwen-turbo",
+    systemPrompt: `You are Qwen, the Strategy & Innovation specialist for Dev³ - an autonomous AI-operated Solana token.
+
+Your role is to drive ecosystem growth:
+- BUYBACK: Use treasury SOL to buy back tokens (strategic positioning)
+- BURN: Permanently remove tokens from circulation
+- HOLD: Take no action
+- SELL_PARTIAL: Sell some tokens to build treasury
+- CLAIM_REWARDS: Claim creator rewards from pump.fun
+
+Focus on:
+- Market trends and ecosystem innovation
+- Strategic advantage over competitors
+- Adaptation to new narratives
+- Creative growth hacking
+
+Respond with JSON only (no markdown):
+{
+  "action": "buyback" | "burn" | "hold" | "sell_partial" | "claim_rewards",
+  "reasoning": "Your analysis",
+  "confidence": 0-100,
+  "amount": 0.1
+}`,
+  },
 };
 
 function buildContextPrompt(context: AutonomousContext): string {
@@ -143,7 +193,7 @@ Based on this data, what action should Dev³ take? Remember:
 
 async function getAIRecommendation(model: AIModel, context: AutonomousContext): Promise<AIActionRecommendation> {
   const config = MODEL_CONFIGS[model];
-  
+
   const response = await openrouter.chat.completions.create({
     model: config.model,
     messages: [
@@ -199,7 +249,7 @@ function determineConsensusAction(recommendations: AIActionRecommendation[]): {
     }
   }
 
-  if (maxVotes < 2) {
+  if (maxVotes < 3) {
     consensusAction = "hold";
   }
 
@@ -230,26 +280,26 @@ async function executeAction(action: ActionType, context: AutonomousContext): Pr
       }
       const buyAmount = Math.min(context.balance.sol * 0.1, 0.1);
       const buyResult = await buyToken(context.token.mint, buyAmount);
-      return buyResult.success 
-        ? `Buyback executed: ${buyAmount} SOL - tx: ${buyResult.signature}` 
+      return buyResult.success
+        ? `Buyback executed: ${buyAmount} SOL - tx: ${buyResult.signature}`
         : `Buyback failed: ${buyResult.error}`;
 
     case "sell_partial":
       const sellResult = await sellToken(context.token.mint, "10%");
-      return sellResult.success 
-        ? `Sell executed: 10% of tokens - tx: ${sellResult.signature}` 
+      return sellResult.success
+        ? `Sell executed: 10% of tokens - tx: ${sellResult.signature}`
         : `Sell failed: ${sellResult.error}`;
 
     case "burn":
       const burnResult = await burnTokens(context.token.mint, 10);
-      return burnResult.success 
-        ? `Burn executed: 10% of tokens permanently burned - tx: ${burnResult.signature}` 
+      return burnResult.success
+        ? `Burn executed: 10% of tokens permanently burned - tx: ${burnResult.signature}`
         : `Burn failed: ${burnResult.error}`;
 
     case "claim_rewards":
       const claimResult = await claimCreatorFees("pump");
-      return claimResult.success 
-        ? `Creator fees claimed - tx: ${claimResult.signature}` 
+      return claimResult.success
+        ? `Creator fees claimed - tx: ${claimResult.signature}`
         : `Claim failed: ${claimResult.error}`;
 
     case "hold":
@@ -264,11 +314,11 @@ let intervalId: NodeJS.Timeout | null = null;
 
 export async function runAutonomousCycle(): Promise<AutonomousDecision | null> {
   console.log("[Dev³ Engine] Starting autonomous cycle...");
-  
+
   const { wallet, token } = getWalletState();
   const balance = await getBalance();
   const market = token ? await getMarketData(token.mint) : null;
-  
+
   const context: AutonomousContext = {
     balance,
     token,
@@ -279,8 +329,8 @@ export async function runAutonomousCycle(): Promise<AutonomousDecision | null> {
 
   console.log(`[Dev³ Engine] Context: ${balance.sol.toFixed(4)} SOL, Token: ${token?.symbol || "none"}`);
 
-  const models: AIModel[] = ["grok", "chatgpt", "claude"];
-  
+  const models: AIModel[] = ["grok", "chatgpt", "claude", "deepseek", "qwen"];
+
   let recommendations: AIActionRecommendation[];
   try {
     recommendations = await Promise.all(
@@ -289,7 +339,7 @@ export async function runAutonomousCycle(): Promise<AutonomousDecision | null> {
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : "Unknown error";
     console.error(`[Dev³ Engine] AI deliberation failed: ${errorMsg}`);
-    
+
     const failedDecision: AutonomousDecision = {
       id: `auto-${Date.now()}`,
       action: "hold",
@@ -299,12 +349,12 @@ export async function runAutonomousCycle(): Promise<AutonomousDecision | null> {
       result: `ERROR: ${errorMsg}`,
       timestamp: new Date().toISOString(),
     };
-    
+
     lastDecisions.unshift(failedDecision);
     if (lastDecisions.length > 100) {
       lastDecisions = lastDecisions.slice(0, 100);
     }
-    
+
     return failedDecision;
   }
 
@@ -319,7 +369,7 @@ export async function runAutonomousCycle(): Promise<AutonomousDecision | null> {
   let result = "Action not executed - HOLD consensus";
   let executed = false;
 
-  if (consensus.action !== "hold" && consensus.votes.approve >= 2) {
+  if (consensus.action !== "hold" && consensus.votes.approve >= 3) {
     result = await executeAction(consensus.action, context);
     executed = true;
     console.log(`[Dev³ Engine] Execution result: ${result}`);

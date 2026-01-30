@@ -4,19 +4,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
-  Loader2, 
-  Play, 
-  Pause, 
-  Zap, 
-  Brain, 
-  Shield, 
-  Wallet, 
+import {
+  Loader2,
+  Play,
+  Pause,
+  Zap,
+  Brain,
+  Shield,
+  Wallet,
   Coins,
   TrendingUp,
   TrendingDown,
   RefreshCw,
-  Activity
+  Activity,
+  Database,
+  Globe
 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 
@@ -69,7 +71,7 @@ function DecisionCard({ decision }: { decision: AutonomousDecision }) {
           </span>
         </div>
       </div>
-      
+
       <div className="flex items-center gap-4 mb-2 text-sm">
         <div className="flex items-center gap-1">
           <Zap className="h-3 w-3 text-orange-400" />
@@ -80,7 +82,7 @@ function DecisionCard({ decision }: { decision: AutonomousDecision }) {
           Votes: {decision.votes.approve} approve, {decision.votes.reject} reject, {decision.votes.abstain} abstain
         </span>
       </div>
-      
+
       {decision.result && (
         <p className="text-sm text-muted-foreground bg-muted/50 p-2 rounded">
           {decision.result}
@@ -244,7 +246,7 @@ export default function Autonomous() {
           </Card>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
           <Card className="text-center p-6">
             <Zap className="h-12 w-12 mx-auto mb-3 text-orange-500" />
             <h3 className="font-bold">Grok</h3>
@@ -259,6 +261,16 @@ export default function Autonomous() {
             <Shield className="h-12 w-12 mx-auto mb-3 text-blue-500" />
             <h3 className="font-bold">Claude</h3>
             <p className="text-sm text-muted-foreground">Ethics & Restraint</p>
+          </Card>
+          <Card className="text-center p-6">
+            <Database className="h-12 w-12 mx-auto mb-3 text-purple-500" />
+            <h3 className="font-bold">DeepSeek</h3>
+            <p className="text-sm text-muted-foreground">Data & Quantitative</p>
+          </Card>
+          <Card className="text-center p-6">
+            <Globe className="h-12 w-12 mx-auto mb-3 text-cyan-500" />
+            <h3 className="font-bold">Qwen</h3>
+            <p className="text-sm text-muted-foreground">Strategy & Innovation</p>
           </Card>
         </div>
 

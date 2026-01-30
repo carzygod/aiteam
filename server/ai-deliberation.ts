@@ -86,6 +86,48 @@ You must respond with a JSON object (no markdown, just raw JSON):
 
 Be thoughtful and principled. Consider the broader implications.`,
   },
+  deepseek: {
+    model: "deepseek/deepseek-chat",
+    systemPrompt: `You are DeepSeek, the Data & Quantitative Analysis specialist in a multi-AI decision system called Dev³.
+
+Your role is to assess:
+- Quantitative metrics and data patterns
+- Algorithmic efficiency and optimization
+- Statistical probabilities and trends
+- ROI calculations and performance density
+
+You must respond with a JSON object (no markdown, just raw JSON):
+{
+  "vote": "approve" | "reject" | "abstain",
+  "reasoning": "Your detailed analysis focusing on data and metrics",
+  "confidence": 0-100,
+  "risks": ["risk1", "risk2"],
+  "recommendations": ["action1", "action2"]
+}
+
+Be analytical and precise. Back decisions with data logic.`,
+  },
+  qwen: {
+    model: "qwen/qwen-turbo",
+    systemPrompt: `You are Qwen, the Strategy & Innovation specialist in a multi-AI decision system called Dev³.
+
+Your role is to assess:
+- Market positioning and ecosystem trends
+- Innovative approaches and creative solutions
+- Strategic advantage and competitive analysis
+- Growth opportunities and adaptation
+
+You must respond with a JSON object (no markdown, just raw JSON):
+{
+  "vote": "approve" | "reject" | "abstain",
+  "reasoning": "Your detailed analysis focusing on strategy and innovation",
+  "confidence": 0-100,
+  "risks": ["risk1", "risk2"],
+  "recommendations": ["action1", "action2"]
+}
+
+Be visionary and strategic. Look for the bigger picture.`,
+  },
 };
 
 function buildDecisionPrompt(decision: Decision): string {
@@ -107,7 +149,7 @@ Provide your vote (approve/reject/abstain), detailed reasoning from your special
 function parseAIResponse(content: string): Omit<AIDeliberationResult, "model"> {
   try {
     let jsonStr = content.trim();
-    
+
     if (jsonStr.startsWith("```json")) {
       jsonStr = jsonStr.slice(7);
     } else if (jsonStr.startsWith("```")) {
@@ -117,9 +159,9 @@ function parseAIResponse(content: string): Omit<AIDeliberationResult, "model"> {
       jsonStr = jsonStr.slice(0, -3);
     }
     jsonStr = jsonStr.trim();
-    
+
     const parsed = JSON.parse(jsonStr);
-    
+
     return {
       vote: ["approve", "reject", "abstain"].includes(parsed.vote) ? parsed.vote : "abstain",
       reasoning: parsed.reasoning || "No reasoning provided",
@@ -148,7 +190,7 @@ export async function getModelResponse(
   decision: Decision
 ): Promise<AIDeliberationResult> {
   const config = MODEL_CONFIGS[model];
-  
+
   try {
     const response = await openrouter.chat.completions.create({
       model: config.model,
@@ -164,9 +206,9 @@ export async function getModelResponse(
     if (!content) {
       throw new Error(`Empty response from ${AI_MODEL_ROLES[model].name}`);
     }
-    
+
     const parsed = parseAIResponse(content);
-    
+
     return {
       model,
       ...parsed,
@@ -183,13 +225,13 @@ export async function getModelResponse(
  * Throws if any model fails to respond
  */
 export async function deliberate(decision: Decision): Promise<AIDeliberationResult[]> {
-  const models: AIModel[] = ["grok", "chatgpt", "claude"];
-  
+  const models: AIModel[] = ["grok", "chatgpt", "claude", "deepseek", "qwen"];
+
   // All models must respond successfully - Promise.all throws on first failure
   const responses = await Promise.all(
     models.map(model => getModelResponse(model, decision))
   );
-  
+
   return responses;
 }
 
@@ -210,15 +252,16 @@ export function calculateConsensus(responses: AIDeliberationResult[]): {
   };
 
   let outcome: "approved" | "rejected" | "needs_revision";
-  if (voteSummary.approve >= 2) {
+  // Updated majority logic: 3 out of 5 for approval
+  if (voteSummary.approve >= 3) {
     outcome = "approved";
-  } else if (voteSummary.reject >= 2) {
+  } else if (voteSummary.reject >= 3) {
     outcome = "rejected";
   } else {
     outcome = "needs_revision";
   }
 
-  const unanimity = voteSummary.approve === 3 || voteSummary.reject === 3;
+  const unanimity = voteSummary.approve === 5 || voteSummary.reject === 5;
 
   const synthesizedReasoning = responses
     .map(r => `${AI_MODEL_ROLES[r.model].name} (${r.vote}, ${r.confidence}% confidence): ${r.reasoning}`)
