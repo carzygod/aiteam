@@ -211,14 +211,6 @@ async function getAIRecommendation(model: AIModel, context: AutonomousContext): 
   let response;
   try {
     response = await openrouter.chat.completions.create(requestPayload);
-    model: config.model,
-    messages: [
-      { role: "system", content: config.systemPrompt },
-      { role: "user", content: buildContextPrompt(context) },
-    ],
-    max_tokens: 512,
-    temperature: 0.7,
-  });
   } catch (error) {
     console.error(`[Dev³ Engine] OpenRouter request error: `, error);
     throw error;
