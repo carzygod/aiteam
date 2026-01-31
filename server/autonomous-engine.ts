@@ -334,11 +334,21 @@ export async function runAutonomousCycle(): Promise<AutonomousDecision | null> {
   let recommendations: AIActionRecommendation[];
   try {
     recommendations = await Promise.all(
-      models.map(model => getAIRecommendation(model, context))
+      models.map(async model => {
+        console.log(`[Dev³ Engine] requesting model: ${model}`);
+        return getAIRecommendation(model, context);
+      }),
     );
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : "Unknown error";
     console.error(`[Dev³ Engine] AI deliberation failed: ${errorMsg}`);
+    if ((error as any).response) {
+      console.error(
+        `[Dev³ Engine] upstream response status=${(error as any).response.status} data=${JSON.stringify(
+          (error as any).response.data,
+        )}`,
+      );
+    }
 
     const failedDecision: AutonomousDecision = {
       id: `auto-${Date.now()}`,
