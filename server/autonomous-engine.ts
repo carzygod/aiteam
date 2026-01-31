@@ -343,14 +343,13 @@ export async function runAutonomousCycle(): Promise<AutonomousDecision | null> {
 
   const models: AIModel[] = ["grok", "chatgpt", "claude", "deepseek", "qwen"];
 
-  let recommendations: AIActionRecommendation[];
+  const recommendations: AIActionRecommendation[] = [];
   try {
-    recommendations = await Promise.all(
-      models.map(async model => {
-        console.log(`[Dev³ Engine] requesting model: ${model}`);
-        return getAIRecommendation(model, context);
-      }),
-    );
+    for (const model of models) {
+      console.log(`[Dev³ Engine] requesting model: ${model}`);
+      const rec = await getAIRecommendation(model, context);
+      recommendations.push(rec);
+    }
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : "Unknown error";
     console.error(`[Dev³ Engine] AI deliberation failed: ${errorMsg}`);
