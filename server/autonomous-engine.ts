@@ -195,9 +195,22 @@ async function getAIRecommendation(model: AIModel, context: AutonomousContext): 
   const config = MODEL_CONFIGS[model];
 
   console.log(`[Dev³ Engine] contacting OpenRouter model: ${config.model}`);
+  const requestUrl = `${process.env.AI_INTEGRATIONS_OPENROUTER_BASE_URL?.replace(/\/$/, "")}/chat/completions`;
+  const requestPayload = {
+    model: config.model,
+    messages: [
+      { role: "system", content: config.systemPrompt },
+      { role: "user", content: buildContextPrompt(context) },
+    ],
+    max_tokens: 512,
+    temperature: 0.7,
+  };
+  console.log(`[Dev³ Engine] OpenRouter request url: ${requestUrl}`);
+  console.log(`[Dev³ Engine] OpenRouter request payload: ${JSON.stringify(requestPayload)}`);
+
   let response;
   try {
-    response = await openrouter.chat.completions.create({
+    response = await openrouter.chat.completions.create(requestPayload);
     model: config.model,
     messages: [
       { role: "system", content: config.systemPrompt },
