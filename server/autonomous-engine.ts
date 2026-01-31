@@ -194,7 +194,10 @@ Based on this data, what action should Dev³ take? Remember:
 async function getAIRecommendation(model: AIModel, context: AutonomousContext): Promise<AIActionRecommendation> {
   const config = MODEL_CONFIGS[model];
 
-  const response = await openrouter.chat.completions.create({
+  console.log(`[Dev³ Engine] contacting OpenRouter model: ${config.model}`);
+  let response;
+  try {
+    response = await openrouter.chat.completions.create({
     model: config.model,
     messages: [
       { role: "system", content: config.systemPrompt },
@@ -203,6 +206,10 @@ async function getAIRecommendation(model: AIModel, context: AutonomousContext): 
     max_tokens: 512,
     temperature: 0.7,
   });
+  } catch (error) {
+    console.error(`[Dev³ Engine] OpenRouter request error: `, error);
+    throw error;
+  }
 
   const content = response.choices[0]?.message?.content || "";
   const jsonMatch = content.match(/\{[\s\S]*\}/);
