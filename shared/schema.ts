@@ -1,5 +1,5 @@
 /**
- * Dev³ (Dev Cubed) - Multi-AI Decision System Schema
+ * Dev³ (AIGOV) - Multi-AI Decision System Schema
  * 
  * This module defines the data models and validation schemas for a consensus-based
  * decision-making system where three AI models (Grok, ChatGPT, Claude) collaborate

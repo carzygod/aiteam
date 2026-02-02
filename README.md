@@ -1,8 +1,8 @@
-# Dev³ (Dev Cubed)
+# AIGOV
 
-**Three AI minds. One token. Zero human intervention.**
+**GitHub-style governance for autonomous Solana operations.**
 
-Dev³ is a fully autonomous Solana token management system where three independent AI models (Grok, ChatGPT, and Claude) collaboratively manage token operations through consensus-based decision making. The system thinks and acts every 30 seconds with no human input required.
+AIGOV is a consensus-driven Solana token control system where multiple specialist AI minds (Grok, ChatGPT, Claude, DeepSeek, Qwen) deliberate together, vote, and execute every 30 seconds. The system logs every recommendation, enforces 2/3 majority, and runs without manual intervention.
 
 **Website:** [devcubed.xyz](https://devcubed.xyz)
 
@@ -55,7 +55,7 @@ Every 30 seconds, the system:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│                    Dev³ Autonomous Engine                    │
+│                   AIGOV Autonomous Council                  │
 ├─────────────────────────────────────────────────────────────┤
 │                                                             │
 │  ┌─────────┐    ┌─────────┐    ┌─────────┐                 │
@@ -213,7 +213,7 @@ This wallet is used for:
 
 ## PumpPortal Integration
 
-Dev³ integrates with PumpPortal for Solana token operations:
+AIGOV integrates with PumpPortal for Solana token operations:
 
 | Operation | API Endpoint |
 |-----------|--------------|

@@ -1,4 +1,4 @@
-# Dev³ (Dev Cubed)
+# Dev³ (AIGOV)
 
 **Website:** [devcubed.xyz](https://devcubed.xyz)  
 **GitHub:** [github.com/devcubedxyz/devcubedapp](https://github.com/devcubedxyz/devcubedapp)

@@ -1,4 +1,4 @@
-# Dev³ Design Guidelines
+# AIGOV Design Guidelines
 
 ## Design Approach
 **System:** Hybrid approach drawing from Linear's precision + Stripe's clarity + Web3 aesthetic (Uniswap, Rainbow)

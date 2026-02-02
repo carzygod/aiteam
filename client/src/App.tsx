@@ -15,8 +15,8 @@ function Navigation() {
   return (
     <nav className="border-b bg-card">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center gap-4">
-        <Link href="/">
-          <span className="text-xl font-bold cursor-pointer">Dev³</span>
+          <Link href="/">
+            <span className="text-xl font-bold cursor-pointer">AIGOV</span>
         </Link>
         <div className="flex items-center gap-2">
           <Link href="/">

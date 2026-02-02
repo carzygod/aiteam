@@ -144,10 +144,10 @@ export default function Autonomous() {
             <div>
               <h1 className="text-3xl font-bold flex items-center gap-3">
                 <Activity className="h-8 w-8 text-primary" />
-                Dev³ Autonomous Engine
+                AIGOV Autonomous Engine
               </h1>
               <p className="text-muted-foreground mt-1">
-                Three AI minds thinking and acting together
+                Five specialist AIs deliberating through Github-style consensus
               </p>
             </div>
             <div className="flex items-center gap-2">

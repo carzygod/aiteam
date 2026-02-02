@@ -87,6 +87,23 @@
   --destructive-border: hsl(from hsl(var(--destructive)) h s calc(l + var(--opaque-button-border-intensity)) / alpha);
 }
 
+:root {
+  --background: 210 11% 8%;
+  --foreground: 213 15% 93%;
+  --border: 210 12% 30%;
+  --card: 210 12% 15%;
+  --card-foreground: 213 15% 93%;
+  --primary: 217 95% 56%;
+  --muted: 210 12% 25%;
+}
+
+body {
+  background-color: #010409;
+  color: #c9d1d9;
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
 .dark {
   --button-outline: rgba(255,255,255, .10);
   --badge-outline: rgba(255,255,255, .05);
