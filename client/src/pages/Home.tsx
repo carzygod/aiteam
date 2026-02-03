@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { formatDistanceToNow } from "date-fns";
 import type { Decision, AIResponse } from "@shared/schema";
-import { Sparkles, Activity, Shield, Pulse, Bolt, Eye } from "lucide-react";
+import { Sparkles, Activity, Shield, Bolt, Eye, Signal } from "lucide-react";
 
 const MODEL_STYLES: Record<string, { label: string; color: string }> = {
   grok: { label: "Grok · Risk & Momentum", color: "text-lime-300" },
@@ -197,7 +197,7 @@ export default function Home() {
               <p className="text-xs uppercase tracking-[0.4em] text-emerald-200">System pulse</p>
               <h2 className="text-2xl font-semibold text-white">Live monitor</h2>
             </div>
-            <Pulse className="h-6 w-6 text-emerald-300" />
+            <Signal className="h-6 w-6 text-emerald-300" />
           </div>
           <div className="mt-6 grid gap-4 sm:grid-cols-2">
             <div className="rounded-2xl border border-white/10 bg-[#071114]/60 p-4 text-sm text-slate-300">
