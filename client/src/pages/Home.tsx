@@ -4,6 +4,16 @@ import { formatDistanceToNow } from "date-fns";
 import type { Decision, AIResponse } from "@shared/schema";
 import { Sparkles, Activity, Shield, Bolt, Eye, Signal } from "lucide-react";
 
+type AutonomousDecision = {
+  id: string;
+  action: string;
+  reasoning: string;
+  votes: { approve: number; reject: number; abstain: number };
+  executed: boolean;
+  result?: string;
+  timestamp: string;
+};
+
 const MODEL_STYLES: Record<string, { label: string; color: string }> = {
   grok: { label: "Grok · Risk & Momentum", color: "text-lime-300" },
   chatgpt: { label: "ChatGPT · Structure & Execution", color: "text-emerald-300" },
@@ -79,6 +89,12 @@ export default function Home() {
     refetchOnMount: true,
     staleTime: 0,
   });
+  const { data: autonomousDecisions } = useQuery<AutonomousDecision[]>({
+    queryKey: ["/api/autonomous/decisions"],
+    refetchInterval: 5000,
+    refetchOnMount: true,
+    staleTime: 0,
+  });
 
   const voteFeed = useMemo(() => {
     if (!decisions) return [];
@@ -123,6 +139,8 @@ export default function Home() {
 
   const totalDecisions = decisions?.length ?? 0;
   const consensusOutcome = decisions?.[0]?.consensus?.outcome ?? "Awaiting";
+  const autonomousDecisionCount = autonomousDecisions?.length ?? 0;
+  const latestAutonomous = autonomousDecisions?.[0];
 
   return (
     <div className="bg-[#010409] text-slate-100 min-h-screen">
@@ -138,7 +156,7 @@ export default function Home() {
           <p className="mt-4 text-lg text-emerald-100/80">
             AIGOV streams every AI proposal, keeps each vote visible, and pushes decisions upward through a neon-green consensus feed.
           </p>
-          <div className="mt-8 grid gap-4 sm:grid-cols-3">
+          <div className="mt-8 grid gap-4 sm:grid-cols-4">
             <div className="rounded-2xl border border-white/10 bg-[#071112]/70 p-4 text-sm">
               <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Total proposals</p>
               <p className="mt-2 text-3xl font-semibold text-white">{totalDecisions}</p>
@@ -152,6 +170,11 @@ export default function Home() {
             <div className="rounded-2xl border border-white/10 bg-[#071112]/70 p-4 text-sm">
               <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Focus</p>
               <p className="mt-2 text-3xl font-semibold text-white">Token launch readiness</p>
+            </div>
+            <div className="rounded-2xl border border-white/10 bg-[#071112]/70 p-4 text-sm">
+              <p className="text-xs uppercase tracking-[0.25em] text-slate-400">Autonomous queue</p>
+              <p className="mt-2 text-3xl font-semibold text-white">{autonomousDecisionCount}</p>
+              <p className="text-xs text-slate-400 mt-1">Latest: {latestAutonomous ? latestAutonomous.action.toUpperCase() : "N/A"}</p>
             </div>
           </div>
         </section>
@@ -170,6 +193,45 @@ export default function Home() {
             ) : (
               <div className="col-span-1 rounded-2xl border border-dashed border-emerald-500/40 p-6 text-center text-sm text-slate-400">
                 Waiting for AI votes to flow in...
+              </div>
+            )}
+          </div>
+        </section>
+
+
+        <section className="rounded-3xl border border-emerald-500/20 bg-[#0b1014]/80 p-8 shadow-[0_20px_60px_rgba(0,0,0,0.8)]">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-xs uppercase tracking-[0.4em] text-emerald-200">Autonomous Engine</p>
+              <h2 className="text-2xl font-semibold text-white">Recent autonomous cycles</h2>
+            </div>
+            <Activity className="h-6 w-6 text-emerald-300" />
+          </div>
+          <div className="mt-6 grid gap-5">
+            {autonomousDecisions?.length ? (
+              autonomousDecisions.map((decision) => (
+                <div
+                  key={decision.id}
+                  className="rounded-2xl border border-emerald-500/20 bg-[#040a0f]/90 p-5 shadow-[0_15px_40px_rgba(0,0,0,0.85)]"
+                >
+                  <div className="flex items-center justify-between font-semibold text-white">
+                    <span>{decision.action.toUpperCase()}</span>
+                    <span className="text-xs text-slate-400">{formatDistanceToNow(new Date(decision.timestamp), { addSuffix: true })}</span>
+                  </div>
+                  <p className="mt-3 text-sm text-slate-300">{decision.reasoning}</p>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs">
+                    <span className="rounded-full border border-emerald-500/40 px-3 py-1 text-emerald-100">Approve {decision.votes.approve}</span>
+                    <span className="rounded-full border border-emerald-500/40 px-3 py-1 text-emerald-100">Reject {decision.votes.reject}</span>
+                    <span className="rounded-full border border-emerald-500/40 px-3 py-1 text-emerald-100">Abstain {decision.votes.abstain}</span>
+                  </div>
+                  {!!decision.result && (
+                    <p className="mt-3 text-xs text-slate-400">{decision.result}</p>
+                  )}
+                </div>
+              ))
+            ) : (
+              <div className="rounded-2xl border border-dashed border-emerald-500/40 p-6 text-center text-sm text-slate-400">
+                Autonomous cycles are warming up — waiting for the next consensus.
               </div>
             )}
           </div>
