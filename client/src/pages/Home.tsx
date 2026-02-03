@@ -75,6 +75,9 @@ function DecisionCard({ decision }: { decision: Decision }) {
 export default function Home() {
   const { data: decisions } = useQuery<Decision[]>({
     queryKey: ["/api/decisions"],
+    refetchInterval: 5000,
+    refetchOnMount: true,
+    staleTime: 0,
   });
 
   const voteFeed = useMemo(() => {
